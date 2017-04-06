@@ -98,7 +98,102 @@
     |-->有 则返回,结束
     |-->没有 则找到该类的构造方法,是否带有@Inject
 
+### 5.Singleton注解 单例
+    假如对同一个对象 需要注入两次,打印 内存地址:
+    public class MainActivity extends AppCompatActivity {
 
+        @Inject  //要注入的对象
+        Person person;
+
+        @Inject
+        Person person2;
+
+        private MainComponent mainComponent;
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main);
+
+            mainComponent = DaggerMainComponent.builder().mainModule(new MainModule()).build();
+            mainComponent.inject(this);
+
+            //打印两个对象的内存地址
+            Log.d("MainActivity", "person:" + person.toString());
+            Log.d("MainActivity", "person2:" + person2.toString());
+
+        }
+    }
+    运行结果:
+     D/Person: person  被创建了~
+     D/Person: person  被创建了~
+     D/MainActivity: person:com.yaya25001.mydagger3demofromzero.model.Person@230bb5
+     D/MainActivity: person2:com.yaya25001.mydagger3demofromzero.model.Person@ca760
+    创建了两个person
+    ---->
+    给providePerson方法添加注解
+    @Provides @Singleton
+            //标明此方法提供依赖对象
+        Person providePerson(){
+
+            return new Person();
+        }
+    同时也要给MainComponent添加注解
+    @Singleton
+    @Component(modules = {MainModule.class}) //沟通部分  调用者和依赖的对象库
+    public interface MainComponent {
+
+        //定义注入的方法
+        void inject(MainActivity mainActivity);
+
+    }
+    运行结果:
+    D/Person: person  被创建了~
+    D/MainActivity: person:com.yaya25001.mydagger3demofromzero.model.Person@230bb552
+    D/MainActivity: person2:com.yaya25001.mydagger3demofromzero.model.Person@230bb552
+    新建activity
+    public class Main2Activity extends AppCompatActivity {
+
+        @Inject
+        Person person;
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main2);
+
+            MainComponent mainComponent = DaggerMainComponent.builder().mainModule(new MainModule()).build();
+            mainComponent.inject(this);
+
+            Log.d("Main2Activity", "person:" + person);
+
+        }
+    }
+    MainActivity添加
+    public void open(View view) {
+        startActivity(new Intent(this,Main2Activity.class));
+    }
+    component添加inject
+    @Singleton
+    @Component(modules = {MainModule.class}) //沟通部分  调用者和依赖的对象库
+    public interface MainComponent {
+
+        //定义注入的方法
+        void inject(MainActivity mainActivity);
+
+        //定义注入的方法
+        void inject(Main2Activity mainActivity);
+
+    }
+    点击打开main2activity
+    输出:
+    D/Person: person  被创建了~
+    D/MainActivity: person:com.yaya25001.mydagger3demofromzero.model.Person@21391726
+    D/MainActivity: person2:com.yaya25001.mydagger3demofromzero.model.Person@21391726
+    D/Person: person  被创建了~
+    D/Main2Activity: person:com.yaya25001.mydagger3demofromzero.model.Person@1b46a637
+    可知结果:@singleton只对一个Component有效,即其单例所依赖的Component
+    ok..
 
 #### 其他:
         参考:
