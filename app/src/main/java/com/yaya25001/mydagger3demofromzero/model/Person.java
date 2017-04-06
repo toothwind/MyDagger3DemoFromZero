@@ -1,5 +1,6 @@
 package com.yaya25001.mydagger3demofromzero.model;
 
+import android.content.Context;
 import android.util.Log;
 
 /**
@@ -9,8 +10,11 @@ import android.util.Log;
  */
 public class Person {
 
-//    @Inject
-    public Person() {
+    private Context context;
+
+    //    @Inject
+    public Person(Context context) {
+        this.context = context;
         Log.d("Person", "person  被创建了~");
     }
 }

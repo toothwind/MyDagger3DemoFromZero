@@ -1,5 +1,7 @@
 package com.yaya25001.mydagger3demofromzero.di.modules;
 
+import android.content.Context;
+
 import com.yaya25001.mydagger3demofromzero.model.Person;
 
 import javax.inject.Singleton;
@@ -15,11 +17,23 @@ import dagger.Provides;
 @Module //提供依赖对象的实例 --> 工厂类
 public class MainModule {
 
+    private Context context;
+
+    public MainModule(Context context) {
+        this.context = context;
+    }
+
+    @Provides //提供 上下文
+    Context provideContext(){
+
+        return context;
+    }
+
     @Provides @Singleton
         //标明此方法提供依赖对象
-    Person providePerson(){
+    Person providePerson(Context context){
 
-        return new Person();
+        return new Person(context);
     }
 
 }

@@ -195,6 +195,58 @@
     可知结果:@singleton只对一个Component有效,即其单例所依赖的Component
     ok..
 
+### 6.需要参数的构造方法
+    现在Person需要参数
+    public class Person {
+
+        private Context context;
+
+        //    @Inject
+        public Person(Context context) {
+            this.context = context;
+            Log.d("Person", "person  被创建了~");
+        }
+    }
+    对与=应修改module
+    @Module //提供依赖对象的实例 --> 工厂类
+    public class MainModule {
+
+        private Context context;
+
+        public MainModule(Context context) {
+            this.context = context;
+        }
+
+        @Provides //提供 上下文
+        Context provideContext(){
+
+            return context;
+        }
+
+        @Provides @Singleton
+            //标明此方法提供依赖对象
+        Person providePerson(Context context){
+
+            return new Person(context);
+        }
+
+    }
+    MainActivity 修改 传入context
+    mainComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
+    mainComponent.inject(this);
+    注意:providePerson 添加context 添加了provideContext来提供context对象
+    过程:
+    ##### (1)根据@Inject注解 查找需要依赖注入的对象
+    ##### (2)根据的MainModule的方法返回值,找到方法providePerson,
+    ##### (3)发现 需要一个参数context,找到module具有返回context的方法provideContext
+    ##### (4)完成初始化
+    添加 provideContext 是为了解耦 假如获取context的方法发生了变化 还需要修改providePerson方法
+    ok...
+
+
+
+
+
 #### 其他:
         参考:
         1.http://blog.csdn.net/lisdye2/article/details/51887402

@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mainComponent = DaggerMainComponent.builder().mainModule(new MainModule()).build();
+        mainComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
         mainComponent.inject(this);
 
         //打印两个对象的内存地址

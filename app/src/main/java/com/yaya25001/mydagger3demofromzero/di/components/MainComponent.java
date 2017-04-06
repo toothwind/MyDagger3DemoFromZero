@@ -1,6 +1,5 @@
 package com.yaya25001.mydagger3demofromzero.di.components;
 
-import com.yaya25001.mydagger3demofromzero.Main2Activity;
 import com.yaya25001.mydagger3demofromzero.MainActivity;
 import com.yaya25001.mydagger3demofromzero.di.modules.MainModule;
 
@@ -20,7 +19,7 @@ public interface MainComponent {
     //定义注入的方法
     void inject(MainActivity mainActivity);
 
-    //定义注入的方法
-    void inject(Main2Activity mainActivity);
+//    //定义注入的方法
+//    void inject(Main2Activity mainActivity);
 
 }
