@@ -242,7 +242,72 @@
     ##### (4)完成初始化
     添加 provideContext 是为了解耦 假如获取context的方法发生了变化 还需要修改providePerson方法
     ok...
+    注意 同一个方法 不要返回值和传入参数一样,会导致递归死循环
 
+### 7.依赖dependents 一个组件Component
+    现在创建一个组件AppComponent 提供context
+    @Component(modules = AppModule.class)
+    public interface AppComponent {
+
+        //向下层提供context
+        Context proContext();
+
+    }
+    @Module
+    public class AppModule {
+
+        private Context context;
+
+        public AppModule(Context context) {
+            this.context = context;
+        }
+
+        //这里提供context
+        @Provides
+        Context provideContext(){
+            return context;
+        }
+
+    }
+    在另一个module需要context  添加dependencies = AppComponent.class
+    @Module
+    public class ActivityModule {
+
+        @Provides
+        Person providePerson(Context context){
+            return new Person(context);
+        }
+
+    }
+    @Component(dependencies = AppComponent.class,modules = {ActivityModule.class})
+    public interface ActivityComponent {
+
+        //子component
+        void inject(MainActivity mainActivity);
+
+    }
+    MainActivity中
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+//        mainComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
+//        mainComponent.inject(this);
+
+        //依赖的对象 component
+        AppComponent app = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+
+        DaggerActivityComponent.builder().appComponent(app).activityModule(new ActivityModule()).build().inject(this);
+
+        //打印两个对象的内存地址
+        Log.d("MainActivity", "person:" + person.toString());
+        Log.d("MainActivity", "person2:" + person2.toString());
+
+    }
+    注意:
+    父Component需要添加提供对象的接口
+    子component注解添加dependencies
 
 
 
