@@ -69,6 +69,34 @@
     运行结果:
     D/Person: person  被创建了~
 
+### 4.变通:
+    注释掉providePerson
+    @Module //提供依赖对象的实例 --> 工厂类
+    public class MainModule {
+    /*
+
+        @Provides //标明此方法提供依赖对象
+        Person providePerson(){
+
+            return new Person();
+        }
+    */
+
+    }
+    给Person构造方法 添加注解@Inject
+    public class Person {
+
+        @Inject
+        public Person() {
+            Log.d("Person", "person  被创建了~");
+        }
+    }
+    运行结果:
+    D/Person: person  被创建了~
+    逻辑分析:
+    先判断module中是否有提供该对象的实例化方法
+    |-->有 则返回,结束
+    |-->没有 则找到该类的构造方法,是否带有@Inject
 
 
 
