@@ -3,6 +3,7 @@ package com.yaya25001.mydagger3demofromzero.di.components;
 import android.content.Context;
 
 import com.yaya25001.mydagger3demofromzero.di.modules.AppModule;
+import com.yaya25001.mydagger3demofromzero.di.scopes.PerApp;
 
 import dagger.Component;
 
@@ -11,6 +12,7 @@ import dagger.Component;
  * you can contact me at : toothwind@163.com.
  * All Rights Reserved
  */
+@PerApp //module添加该标记 此处也要加
 @Component(modules = AppModule.class)
 public interface AppComponent {
 

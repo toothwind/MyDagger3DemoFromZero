@@ -2,6 +2,8 @@ package com.yaya25001.mydagger3demofromzero.di.modules;
 
 import android.content.Context;
 
+import com.yaya25001.mydagger3demofromzero.di.scopes.PerApp;
+
 import dagger.Module;
 import dagger.Provides;
 
@@ -21,6 +23,8 @@ public class AppModule {
 
     //这里提供context
     @Provides
+    @PerApp
+    //添加该标记标明 该方法只产生一个 实例
     Context provideContext(){
         return context;
     }

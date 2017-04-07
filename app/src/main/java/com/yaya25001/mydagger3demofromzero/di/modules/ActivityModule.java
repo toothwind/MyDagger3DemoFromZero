@@ -2,6 +2,7 @@ package com.yaya25001.mydagger3demofromzero.di.modules;
 
 import android.content.Context;
 
+import com.yaya25001.mydagger3demofromzero.di.scopes.PerActivity;
 import com.yaya25001.mydagger3demofromzero.model.Person;
 
 import dagger.Module;
@@ -15,6 +16,7 @@ import dagger.Provides;
 @Module
 public class ActivityModule {
 
+    @PerActivity
     @Provides
     Person providePerson(Context context){
         return new Person(context);

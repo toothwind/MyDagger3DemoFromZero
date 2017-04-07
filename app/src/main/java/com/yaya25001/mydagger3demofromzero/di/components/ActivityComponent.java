@@ -2,6 +2,7 @@ package com.yaya25001.mydagger3demofromzero.di.components;
 
 import com.yaya25001.mydagger3demofromzero.MainActivity;
 import com.yaya25001.mydagger3demofromzero.di.modules.ActivityModule;
+import com.yaya25001.mydagger3demofromzero.di.scopes.PerActivity;
 
 import dagger.Component;
 
@@ -10,6 +11,7 @@ import dagger.Component;
  * you can contact me at : toothwind@163.com.
  * All Rights Reserved
  */
+@PerActivity
 @Component(dependencies = AppComponent.class,modules = {ActivityModule.class})
 public interface ActivityComponent {
 

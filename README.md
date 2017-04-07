@@ -426,6 +426,74 @@
     D/dagger: 创建==name=123
     D/dagger: 创建==name=456
 
+### 9. scope 对于singleton 是scope的一个实现
+    singleton源码:
+    @Scope
+    @Documented
+    @Retention(RUNTIME)
+    public @interface Singleton {}
+    全局生命周期:
+    @Scope //模仿 单例singleton
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface PerApp {
+    }
+    application:
+    public class MyApp extends Application {
+
+        //AppComponent 对应着app的生命周期
+        public static AppComponent appComponent;
+
+        @Override
+        public void onCreate() {
+            super.onCreate();
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        }
+    }
+    对应的module
+    //这里提供context
+    @Provides
+    @PerApp
+    //添加该标记标明 该方法只产生一个 实例
+    Context provideContext(){
+        return context;
+    }
+    对应的component
+    @PerApp //module添加该标记 此处也要加
+    @Component(modules = AppModule.class)
+    public interface AppComponent {
+
+        //向下层提供context
+        Context proContext();
+
+    }
+    activity生命周期
+    @Scope
+    @Documented
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface PerActivity {
+    }
+    module..
+    @Module
+    public class ActivityModule {
+
+        @PerActivity
+        @Provides
+        Person providePerson(Context context){
+            return new Person(context);
+        }
+
+    }
+    component....
+    @PerActivity
+    @Component(dependencies = AppComponent.class,modules = {ActivityModule.class})
+    public interface ActivityComponent {
+
+        //子component
+        void inject(MainActivity mainActivity);
+
+    }
+    运行 正常
 
 
 
