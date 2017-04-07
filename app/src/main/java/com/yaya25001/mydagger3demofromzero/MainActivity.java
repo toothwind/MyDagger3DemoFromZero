@@ -6,12 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 
-import com.yaya25001.mydagger3demofromzero.di.components.AppComponent;
 import com.yaya25001.mydagger3demofromzero.di.components.DaggerActivityComponent;
-import com.yaya25001.mydagger3demofromzero.di.components.DaggerAppComponent;
 import com.yaya25001.mydagger3demofromzero.di.components.MainComponent;
 import com.yaya25001.mydagger3demofromzero.di.modules.ActivityModule;
-import com.yaya25001.mydagger3demofromzero.di.modules.AppModule;
 import com.yaya25001.mydagger3demofromzero.model.Person;
 
 import javax.inject.Inject;
@@ -35,9 +32,9 @@ public class MainActivity extends AppCompatActivity {
 //        mainComponent.inject(this);
 
         //依赖的对象 component
-        AppComponent app = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+//        AppComponent app = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
 
-        DaggerActivityComponent.builder().appComponent(app).activityModule(new ActivityModule()).build().inject(this);
+        DaggerActivityComponent.builder().appComponent(MyApp.appComponent).activityModule(new ActivityModule()).build().inject(this);
 
         //打印两个对象的内存地址
         Log.d("MainActivity", "person:" + person.toString());

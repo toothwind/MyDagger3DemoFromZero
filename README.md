@@ -495,6 +495,35 @@
     }
     运行 正常
 
+### 9.+ MainActivity app不创建module 用静态的
+    //依赖的对象 component
+    //AppComponent app = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+    DaggerActivityComponent.builder().appComponent(MyApp.appComponent).activityModule(new ActivityModule()).build().inject(this);
+
+    对于有依赖关系的component,不能使用相同的scope,会使语义不明.
+
+### 10. 懒加载和强制加载 Lazy 和 Provide
+    Main2Activity
+    @StuForName123
+    @Inject
+    Lazy<Student> lazyStudent;
+
+    @StuForName456
+    @Inject
+    Provider<Student> providerStudent;
+
+    public void lazy(View view){
+        //该方法调用时 才会创建student 以后每次都用这个
+        Student student = lazyStudent.get();
+        Log.d("Main2Activity", "student:" + student);
+    }
+    public void provide(View view){
+        //调用该方法才回去实例化stu 根据module方法 每次都重新加载 根据module的实现 可能相同 也可能不相同
+        Student student = providerStudent.get();
+        Log.d("Main2Activity", "student:" + student);
+
+    }
+
 
 
 #### 其他:
