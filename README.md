@@ -245,6 +245,7 @@
     注意 同一个方法 不要返回值和传入参数一样,会导致递归死循环
 
 ### 7.依赖dependents 一个组件Component
+
     现在创建一个组件AppComponent 提供context
     @Component(modules = AppModule.class)
     public interface AppComponent {
@@ -292,8 +293,8 @@
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        mainComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
-//        mainComponent.inject(this);
+     // mainComponent = DaggerMainComponent.builder().mainModule(new MainModule(this)).build();
+     // mainComponent.inject(this);
 
         //依赖的对象 component
         AppComponent app = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
@@ -308,6 +309,122 @@
     注意:
     父Component需要添加提供对象的接口
     子component注解添加dependencies
+
+### 8.@qualifier标记  @Named
+#### 8.1 @Named
+    //TODO
+    相同的inject(MainActivity mainActivity) 报错...
+    //新创建
+    bean类:
+    public class Student {
+
+        private String name;
+
+        public Student(String name) {
+            this.name = name;
+            Log.d("dagger", "创建==name=" + name);
+        }
+    }
+    component...
+    @Component(modules = {StuModule.class})
+    public interface StuComponent {
+
+        void inject(Main2Activity mainActivity);
+
+    }
+    module...
+    @Module
+    public class StuModule {
+
+        @Named("123")
+        @Provides
+        Student provideStudent(){
+            return new Student("123");
+        }
+
+        @Named("456")
+        @Provides
+        Student provideStudent2(){
+            return new Student("456");
+        }
+
+    }
+    调...
+    public class Main2Activity extends AppCompatActivity {
+
+    //    @Inject
+    //    Person person;
+
+        @Named("123")
+        @Inject
+        Student student1;
+
+        @Named("456")
+        @Inject
+        Student student2;
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_main2);
+
+    //        MainComponent mainComponent = DaggerMainComponent.builder().mainModule(new MainModule()).build();
+    //        mainComponent.inject(this);
+    //
+    //        Log.d("Main2Activity", "person:" + person);
+
+            DaggerStuComponent.builder().stuModule(new StuModule()).build().inject(this);
+
+        }
+    }
+    运行结果:
+    D/dagger: 创建==name=123
+    D/dagger: 创建==name=456
+
+#### 8.1 @qualifier
+    新创建;俩qualifier
+    1.
+    @Qualifier //关键词
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface StuForName123 {
+    }
+    2.
+    @Qualifier
+    @Retention(RetentionPolicy.RUNTIME)
+    public @interface StuForName456 {
+    }
+    修改Module
+    @Module
+    public class StuModule {
+
+    //    @Named("123")
+        @StuForName123
+        @Provides
+        Student provideStudent(){
+            return new Student("123");
+        }
+
+    //    @Named("456")
+        @StuForName456
+        @Provides
+        Student provideStudent2(){
+            return new Student("456");
+        }
+
+    }
+    使用修改:
+    //    @Named("123")
+        @StuForName123
+        @Inject
+        Student student1;
+
+    //    @Named("456")
+        @StuForName456
+        @Inject
+        Student student2;
+    运行结果:
+    D/dagger: 创建==name=123
+    D/dagger: 创建==name=456
 
 
 

@@ -15,6 +15,6 @@ public class Person {
     //    @Inject
     public Person(Context context) {
         this.context = context;
-        Log.d("Person", "person  被创建了~");
+        Log.d("dagger", "person  被创建了~");
     }
 }
